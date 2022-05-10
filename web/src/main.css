@@ -1,6 +1,12 @@
+h2{
+    text-align: center;
+    color: #fff;
+    margin-top: 50vh;
+}
 table{
     border:1px solid #fff;
     border-collapse: collapse;
+    margin: 0 auto;
 }
 tr,th,td{
     border:1px solid #fff;
@@ -9,4 +15,42 @@ tr,th,td{
 th{
     background:#fff;
     color:#000;
+}
+td{
+    color:#fff;
+}
+
+tr:hover td{
+    color:#000;
+    background: #efeded;
+    cursor:pointer;
+}
+.filterContainer {
+	display: flex;
+	flex-flow: row wrap;
+	gap: 15px;
+    justify-content: center;
+    padding: 18px 0px;
+}
+.filterContainer button {
+	background: #fff;
+	border: 0px;
+	padding: 6px 17px;
+}
+.filterContainer button:hover {
+	background: #eae8e8;
+    cursor:pointer;
+}
+span.detail{
+    color:#828282;
+}
+.headingWithLogo{
+    font-weight: bolder;
+    font-size: 22px;
+}
+.headingWithLogo img {
+	vertical-align: middle;
+	border-radius: 50%;
+	max-width: 58px;
+	margin-right: 12px;
 }
