@@ -61,6 +61,12 @@ const newConfig = Object.assign({}, config, {
     'use-isnan': 'error',
     'no-shadow': 'error',
     'no-unused-expressions': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   }),
   overrides: convertOverridesToArray(config.overrides).map((override) => {
     if (override.parser === '@typescript-eslint/parser') {
