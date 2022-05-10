@@ -12,6 +12,11 @@ const corsOptions = {
 
 export const app = express();
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 // Routes. Note these will fail about 25% due to "terrible" middleware.
 app.use('/repos', terrible(), cors(corsOptions), repos);
 
@@ -26,9 +31,4 @@ app.use('/', (err: Error, req: Request, res: Response, next: NextFunction) => {
 
   res.status(status);
   res.json(formattedError);
-});
-
-app.use((req, res, next) => {
-  res.setHeader('Content-Type', 'application/json');
-  next();
 });
