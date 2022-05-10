@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import ReactModal from 'react-modal';
+import { parse } from 'marked';
 
 export default class Modal extends Component {
   state = {
     repo: [],
     commitInfo: [],
+    readmeData: null,
   };
   componentDidUpdate() {
     if (
@@ -14,20 +16,48 @@ export default class Modal extends Component {
       this.setState({
         repo: this.props.selectedRepo[0],
       });
+      if (this.props.selectedRepo[0].has_wiki) {
+        this.getReadmeFile(this.props.selectedRepo[0].full_name);
+      } else {
+        this.setState({
+          readmeData: null,
+        });
+      }
       this.getCommitInfo(this.state.repo.commits_url);
     }
   }
 
   getCommitInfo = async (_url) => {
-    const url = _url.replace('{/sha}', '');
+    if (_url !== undefined) {
+      const url = _url.replace('{/sha}', '');
+      const response = await fetch(url);
+      if (response.ok) {
+        const info = await response.json();
+        info.sort((a, b) => {
+          return a.commit.author.date < b.commit.author.date;
+        });
+        this.setState({
+          commitInfo: info[0],
+        });
+      }
+
+      if (response.status === 400) {
+        this.setState({
+          commitInfo: [],
+        });
+      }
+    }
+  };
+
+  getReadmeFile = async (name) => {
+    const url = `https://raw.githubusercontent.com/${name}/master/README.md`;
+
     const response = await fetch(url);
+
     if (response.ok) {
-      const info = await response.json();
-      info.sort((a, b) => {
-        return a.commit.author.date < b.commit.author.date;
-      });
+      const readmeData = await response.text();
       this.setState({
-        commitInfo: info[0],
+        readmeData,
       });
     }
   };
@@ -80,8 +110,18 @@ export default class Modal extends Component {
                   ? this.state.commitInfo.commit.message
                   : 'N/A'}
               </span>
+              {this.state.readmeData !== null && (
+                <>
+                  <hr />
+
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: parse(this.state.readmeData),
+                    }}
+                  />
+                </>
+              )}
             </h3>
-            {this.state.repo.has_wiki ? 'nonono' : 'yeyye'}
           </>
         )}
       </ReactModal>

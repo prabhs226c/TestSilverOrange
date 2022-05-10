@@ -22,6 +22,7 @@ export default class MainPage extends Component {
     filter: null,
     isModalOpen: false,
     selectedRepo: [],
+    loadingState: 'Loading',
   };
 
   componentDidMount() {
@@ -30,7 +31,7 @@ export default class MainPage extends Component {
 
   getRepos = async () => {
     const url = `http://${SERVER}/repos`;
-    console.log(url);
+
     const response = await fetch(url, requestHeaders);
 
     if (response.ok) {
@@ -50,6 +51,12 @@ export default class MainPage extends Component {
       this.setState({
         repos,
         languages,
+      });
+    }
+
+    if (response.status === 400) {
+      this.setState({
+        loadingState: 'Unable to Get Repositories',
       });
     }
   };
@@ -108,12 +115,13 @@ export default class MainPage extends Component {
         {this.state.repos.length > 0 ? (
           <table>
             <thead key={0}>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Language</th>
-              <th>forks count</th>
-              <th>Created at</th>
-              <th>Action</th>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Language</th>
+                <th>forks count</th>
+                <th>Created at</th>
+              </tr>
             </thead>
             <tbody>
               {this.state.repos.map((repo) => {
@@ -136,7 +144,6 @@ export default class MainPage extends Component {
                       <td>
                         {new Date(repo.created_at).toLocaleDateString('en-us')}
                       </td>
-                      <td>View</td>
                     </tr>
                   );
                 }
@@ -145,7 +152,7 @@ export default class MainPage extends Component {
             </tbody>
           </table>
         ) : (
-          <h2>No Repo</h2>
+          <h2>{this.state.loadingState}</h2>
         )}
         <Modal
           isOpen={this.state.isModalOpen}
