@@ -27,3 +27,8 @@ app.use('/', (err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(status);
   res.json(formattedError);
 });
+
+app.use((req, res, next) => {
+  res.setHeader('Content-Type', 'application/json');
+  next();
+});
